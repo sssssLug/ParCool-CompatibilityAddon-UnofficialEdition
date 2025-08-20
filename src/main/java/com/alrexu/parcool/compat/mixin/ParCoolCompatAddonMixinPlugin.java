@@ -1,5 +1,6 @@
 package com.alrexu.parcool.compat.mixin;
 
+import net.minecraftforge.fml.ModList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -19,7 +20,11 @@ public class ParCoolCompatAddonMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return true;
+        return (targetClassName.contains("com.tacz.guns") && mixinClassName.contains("compat.mixin.tacz") && ModList.get().isLoaded("tacz"))
+               || (targetClassName.contains("dev.kosmx.playerAnim") && mixinClassName.contains("compat.mixin.playeranimator") && ModList.get().isLoaded("playeranimator"))
+               || (targetClassName.contains("net.bettercombat") && mixinClassName.contains("compat.mixin.bettercombat") && ModList.get().isLoaded("bettercombat"))
+               || (targetClassName.contains("tschipp.carryon") && mixinClassName.contains("compat.mixin.carryon") && ModList.get().isLoaded("carryon"))
+               || (targetClassName.contains("com.vicmatskiv.pointblank") && mixinClassName.contains("compat.mixin.pointblank") && ModList.get().isLoaded("pointblank"));
     }
 
     @Override
