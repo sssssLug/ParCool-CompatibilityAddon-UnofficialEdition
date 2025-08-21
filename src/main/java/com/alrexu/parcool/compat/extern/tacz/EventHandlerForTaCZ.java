@@ -59,6 +59,7 @@ public class EventHandlerForTaCZ {
                     || animator instanceof SpeedVaultAnimator
                     || animator instanceof ChargeJumpAnimator
                     || animator instanceof CatLeapAnimator
+                    || animator instanceof HangAnimator
 //                    || animator instanceof ClingToCliffAnimator
                     || animator instanceof WallJumpAnimator
                     || animator instanceof JumpFromBarAnimator
@@ -69,9 +70,9 @@ public class EventHandlerForTaCZ {
             }
 
             if (animator instanceof ClingToCliffAnimator) {
-                if (isLeftHandClinging(event.getPlayer())) {
+                /*if (isLeftHandClinging(event.getPlayer())) {
                     event.getOption().cancel(AnimationPart.RIGHT_ARM);
-                }
+                }*/
                 return;
             }
 
@@ -90,26 +91,43 @@ public class EventHandlerForTaCZ {
     }*/
 
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    /*
+    * In TaCZ shooting event will be triggered in Two orders:
+    * 1.(For players) Player key input -> clientside event |-> send packet -> server shoot logic -> serverside event |-> send packet -> clientside event -> (locked to avoid double client effect);
+    *                                                      |-> client effect                                         |-> bullet created and shot
+    * 2.(For livings) Some sever execution (Provided by third-party mods) -> server shoot logic -> serverside event |-> send packet -> clientside event -> client effect.
+    *                                                                                                               |-> bullet created and shot
+    * */
+    @SubscribeEvent
     public static void onGunToShoot(GunShootEvent event) {
         LivingEntity shooter = event.getShooter();
-        if (!(shooter instanceof Player player)) return;
+        //Maybe we can stop clientside only?
+        /*if (!event.getLogicalSide().isClient()) {
+            return;
+        }*/
+
+        if (!(shooter instanceof Player player)) {
+            return;
+        }
+
 
         Parkourability instance = Parkourability.get(player);
         if(instance == null) return;
 
 
-        ClingToCliff cCliff = instance.get(ClingToCliff.class);
+        /*ClingToCliff cCliff = instance.get(ClingToCliff.class);
         if(cCliff != null && cCliff.isDoing()) {
             if(cCliff.getFacingDirection() == ClingToCliff.FacingDirection.RightAgainstWall) return;
             event.setCanceled(true);
             return;
-        }
+        }*/
 
         if(instance.isDoingAny(
                 Crawl.class,
+                CatLeap.class,
                 BreakfallReady.class,
                 Tap.class,
+                //barely
                 HorizontalWallRun.class
         )) return;
 
@@ -118,6 +136,7 @@ public class EventHandlerForTaCZ {
                 WallJump.class,
                 JumpFromBar.class,
                 RideZipline.class,
+                //barely
                 VerticalWallRun.class
         )) {
             com.tacz.guns.resource.modifier.AttachmentCacheProperty cache = IGunOperator.fromLivingEntity(shooter).getCacheProperty();
@@ -140,7 +159,7 @@ public class EventHandlerForTaCZ {
     }
 
 
-    private static boolean isLeftHandClinging(Player player) {
+    /*private static boolean isLeftHandClinging(Player player) {
         Parkourability parkourability = Parkourability.get(player);
         if (parkourability != null) {
             ClingToCliff cCliff = parkourability.get(ClingToCliff.class);
@@ -148,11 +167,5 @@ public class EventHandlerForTaCZ {
         }
 
         return false;
-    }
-
-
-    private static boolean isLeftHandClinging(Parkourability parkourability) {
-            ClingToCliff cCliff = parkourability.get(ClingToCliff.class);
-            return cCliff != null && cCliff.getFacingDirection() == ClingToCliff.FacingDirection.RightAgainstWall;
-    }
+    }*/
 }
