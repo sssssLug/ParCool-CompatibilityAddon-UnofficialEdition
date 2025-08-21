@@ -20,11 +20,11 @@ public class ParCoolCompatAddonMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return (targetClassName.contains("com.tacz.guns") && mixinClassName.contains("compat.mixin.tacz") && ModList.get().isLoaded("tacz"))
-               || (targetClassName.contains("dev.kosmx.playerAnim") && mixinClassName.contains("compat.mixin.playeranimator") && ModList.get().isLoaded("playeranimator"))
-               || (targetClassName.contains("net.bettercombat") && mixinClassName.contains("compat.mixin.bettercombat") && ModList.get().isLoaded("bettercombat"))
-               || (targetClassName.contains("tschipp.carryon") && mixinClassName.contains("compat.mixin.carryon") && ModList.get().isLoaded("carryon"))
-               || (targetClassName.contains("com.vicmatskiv.pointblank") && mixinClassName.contains("compat.mixin.pointblank") && ModList.get().isLoaded("pointblank"));
+        return (targetClassName.contains("com.tacz.guns") && mixinClassName.contains("compat.mixin.tacz") && isClassLoaded(targetClassName))
+               || (targetClassName.contains("dev.kosmx.playerAnim") && mixinClassName.contains("compat.mixin.playeranimator") && isClassLoaded(targetClassName))
+               || (targetClassName.contains("net.bettercombat") && mixinClassName.contains("compat.mixin.bettercombat") && isClassLoaded(targetClassName))
+               || (targetClassName.contains("tschipp.carryon") && mixinClassName.contains("compat.mixin.carryon") && isClassLoaded(targetClassName))
+               || (targetClassName.contains("com.vicmatskiv.pointblank") && mixinClassName.contains("compat.mixin.pointblank") && isClassLoaded(targetClassName));
     }
 
     @Override
@@ -45,5 +45,14 @@ public class ParCoolCompatAddonMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
 
+    }
+
+    private boolean isClassLoaded(String className) {
+        try {
+            Class.forName(className, false, this.getClass().getClassLoader());
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }
