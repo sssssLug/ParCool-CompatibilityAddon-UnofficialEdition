@@ -24,7 +24,8 @@ public class ParCoolCompatAddonMixinPlugin implements IMixinConfigPlugin {
                || (targetClassName.contains("dev.kosmx.playerAnim") && mixinClassName.contains("compat.mixin.playeranimator") && isClassLoaded(targetClassName))
                || (targetClassName.contains("net.bettercombat") && mixinClassName.contains("compat.mixin.bettercombat") && isClassLoaded(targetClassName))
                || (targetClassName.contains("tschipp.carryon") && mixinClassName.contains("compat.mixin.carryon") && isClassLoaded(targetClassName))
-               || (targetClassName.contains("com.vicmatskiv.pointblank") && mixinClassName.contains("compat.mixin.pointblank") && isClassLoaded(targetClassName));
+               || (targetClassName.contains("com.vicmatskiv.pointblank") && mixinClassName.contains("compat.mixin.pointblank") && isClassLoaded(targetClassName))
+               || mixinClassName.contains("com.alrexu.parcool");
     }
 
     @Override

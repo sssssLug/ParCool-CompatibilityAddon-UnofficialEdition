@@ -1,21 +1,31 @@
 package com.alrexu.parcool.compat.extern.tacz;
 
+import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.api.unstable.animation.AnimationPart;
 import com.alrex.parcool.api.unstable.animation.ParCoolAnimationInfoEvent;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.impl.*;
+import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.impl.*;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
+import com.mojang.logging.LogUtils;
+import com.tacz.guns.api.client.gameplay.IClientPlayerGunOperator;
 import com.tacz.guns.api.entity.IGunOperator;
+import com.tacz.guns.api.event.common.GunFireEvent;
 import com.tacz.guns.api.event.common.GunShootEvent;
 import com.tacz.guns.api.item.gun.AbstractGunItem;
+import com.tacz.guns.client.gameplay.LocalPlayerDataHolder;
+import com.tacz.guns.client.gameplay.LocalPlayerReload;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.slf4j.Logger;
 
 public class EventHandlerForTaCZ {
     @OnlyIn(Dist.CLIENT)
@@ -48,6 +58,12 @@ public class EventHandlerForTaCZ {
             }
 
             if (animator instanceof FastRunningAnimator) {
+                AbstractClientPlayer player = event.getPlayer();
+                if (player instanceof IClientPlayerGunOperator operator && IClientPlayerGunOperator.fromLocalPlayer((LocalPlayer) player).isAim()) {
+                    event.getOption().cancelAnimation();
+                    return;
+                }
+
                 event.getOption().cancel(AnimationPart.LEFT_LEG);
                 event.getOption().cancel(AnimationPart.RIGHT_LEG);
                 event.getOption().cancel(AnimationPart.LEFT_ARM);
@@ -85,11 +101,6 @@ public class EventHandlerForTaCZ {
         }
     }
 
-    /*@SubscribeEvent
-    public static void onAction(ParCoolActionEvent event) {
-        Action action = event.getAction();
-    }*/
-
 
     /*
     * In TaCZ shooting event will be triggered in Two orders:
@@ -98,7 +109,7 @@ public class EventHandlerForTaCZ {
     * 2.(For livings) Some sever execution (Provided by third-party mods) -> server shoot logic -> serverside event |-> send packet -> clientside event -> client effect.
     *                                                                                                               |-> bullet created and shot
     * */
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onGunToShoot(GunShootEvent event) {
         LivingEntity shooter = event.getShooter();
         //Maybe we can stop clientside only?
@@ -155,6 +166,20 @@ public class EventHandlerForTaCZ {
         if(instance.isDoingAny(
                 FastRun.class) || !instance.isDoingNothing()) {
             event.setCanceled(true);
+        }
+    }
+
+    /**
+     * Fix a client bug: When you hold sprint key (together with fast-run key) and try to aim,
+     * then release sprint (and fast-run) key (at this point you'll stop fast-run but keep sprinting due to a Vanilla feature),
+     * you will be able to shoot at a strange angle (Just in client animation, won't affect the real bullet on server).
+     * This bug occurs much frequently with Parcool mod.
+     * IDK the reason, but anyway this handler will fix it. And it won't stop you from sprinting, actually.*/
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onGunFiring(GunFireEvent event) {
+        LivingEntity shooter = event.getShooter();
+        if(shooter instanceof Player player && player.isSprinting()) {
+            player.setSprinting(false);
         }
     }
 
