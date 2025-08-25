@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(Entity.class)
+@Mixin(value = Entity.class, remap = true)
 public abstract class EntityMixin {
 
 
@@ -29,7 +29,7 @@ public abstract class EntityMixin {
             Parkourability instance = Parkourability.get(player);
             if (instance != null) {
 
-                if(instance.isDoingAny(HangDown.class/*, ClingToCliff.class*/)) {
+                if (instance.get(HangDown.class).isDoing()) {
                     return true;
                 }
             }

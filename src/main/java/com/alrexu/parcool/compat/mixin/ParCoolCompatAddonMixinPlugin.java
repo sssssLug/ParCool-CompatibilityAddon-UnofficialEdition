@@ -20,12 +20,6 @@ public class ParCoolCompatAddonMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        /*return (targetClassName.contains("com.tacz.guns") && mixinClassName.contains("compat.mixin.tacz") && isClassLoaded(targetClassName))
-               || (targetClassName.contains("dev.kosmx.playerAnim") && mixinClassName.contains("compat.mixin.playeranimator") && isClassLoaded(targetClassName))
-               || (targetClassName.contains("net.bettercombat") && mixinClassName.contains("compat.mixin.bettercombat") && isClassLoaded(targetClassName))
-               || (targetClassName.contains("tschipp.carryon") && mixinClassName.contains("compat.mixin.carryon") && isClassLoaded(targetClassName))
-               || (targetClassName.contains("com.vicmatskiv.pointblank") && mixinClassName.contains("compat.mixin.pointblank") && isClassLoaded(targetClassName))
-               || mixinClassName.contains("compat.mixin.parcool");*/
         return true;
     }
 
