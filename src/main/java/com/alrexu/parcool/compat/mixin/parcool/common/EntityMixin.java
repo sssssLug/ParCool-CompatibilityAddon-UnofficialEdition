@@ -29,7 +29,11 @@ public abstract class EntityMixin {
             Parkourability instance = Parkourability.get(player);
             if (instance != null) {
 
-                if(instance.isDoingAny(HangDown.class/*, ClingToCliff.class*/)) {
+                /*if(instance.isDoingAny(HangDown.class*//*, ClingToCliff.class*//*)) {
+                    return true;
+                }*/
+
+                if (instance.get(HangDown.class).isDoing()) {
                     return true;
                 }
             }

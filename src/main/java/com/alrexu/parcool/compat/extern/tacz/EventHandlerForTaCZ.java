@@ -1,22 +1,17 @@
 package com.alrexu.parcool.compat.extern.tacz;
 
-import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.api.unstable.animation.AnimationPart;
 import com.alrex.parcool.api.unstable.animation.ParCoolAnimationInfoEvent;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.impl.*;
-import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.impl.*;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
-import com.mojang.logging.LogUtils;
 import com.tacz.guns.api.client.gameplay.IClientPlayerGunOperator;
 import com.tacz.guns.api.entity.IGunOperator;
 import com.tacz.guns.api.event.common.GunFireEvent;
 import com.tacz.guns.api.event.common.GunShootEvent;
 import com.tacz.guns.api.item.gun.AbstractGunItem;
-import com.tacz.guns.client.gameplay.LocalPlayerDataHolder;
-import com.tacz.guns.client.gameplay.LocalPlayerReload;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +20,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.slf4j.Logger;
 
 public class EventHandlerForTaCZ {
     @OnlyIn(Dist.CLIENT)
