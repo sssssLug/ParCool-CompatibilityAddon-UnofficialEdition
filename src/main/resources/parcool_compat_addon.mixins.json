@@ -11,6 +11,6 @@
   "client": [
   ],
   "mixins": [
-    "tacz.TaCZInaccuracyTypeMixin"
+    "parcool.common.EntityMixin"
   ]
 }
