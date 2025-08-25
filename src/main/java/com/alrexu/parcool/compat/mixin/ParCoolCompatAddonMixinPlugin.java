@@ -20,12 +20,13 @@ public class ParCoolCompatAddonMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return (targetClassName.contains("com.tacz.guns") && mixinClassName.contains("compat.mixin.tacz") && isClassLoaded(targetClassName))
+        /*return (targetClassName.contains("com.tacz.guns") && mixinClassName.contains("compat.mixin.tacz") && isClassLoaded(targetClassName))
                || (targetClassName.contains("dev.kosmx.playerAnim") && mixinClassName.contains("compat.mixin.playeranimator") && isClassLoaded(targetClassName))
                || (targetClassName.contains("net.bettercombat") && mixinClassName.contains("compat.mixin.bettercombat") && isClassLoaded(targetClassName))
                || (targetClassName.contains("tschipp.carryon") && mixinClassName.contains("compat.mixin.carryon") && isClassLoaded(targetClassName))
                || (targetClassName.contains("com.vicmatskiv.pointblank") && mixinClassName.contains("compat.mixin.pointblank") && isClassLoaded(targetClassName))
-               || mixinClassName.contains("com.alrexu.parcool");
+               || mixinClassName.contains("compat.mixin.parcool");*/
+        return true;
     }
 
     @Override
@@ -48,12 +49,12 @@ public class ParCoolCompatAddonMixinPlugin implements IMixinConfigPlugin {
 
     }
 
-    private boolean isClassLoaded(String className) {
+    /*private boolean isClassLoaded(String className) {
         try {
             Class.forName(className, false, this.getClass().getClassLoader());
             return true;
         } catch (ClassNotFoundException e) {
             return false;
         }
-    }
+    }*/
 }
