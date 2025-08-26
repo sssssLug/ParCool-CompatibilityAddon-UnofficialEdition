@@ -1,9 +1,11 @@
 package com.alrexu.parcool.compat.extern.tacz;
 
+import com.alrex.parcool.api.unstable.action.ParCoolActionEvent;
 import com.alrex.parcool.api.unstable.animation.AnimationPart;
 import com.alrex.parcool.api.unstable.animation.ParCoolAnimationInfoEvent;
 import com.alrex.parcool.client.animation.Animator;
 import com.alrex.parcool.client.animation.impl.*;
+import com.alrex.parcool.common.action.Action;
 import com.alrex.parcool.common.action.impl.*;
 import com.alrex.parcool.common.capability.IStamina;
 import com.alrex.parcool.common.capability.Parkourability;
@@ -28,11 +30,11 @@ public class EventHandlerForTaCZ {
         if (event.getPlayer().getMainHandItem().getItem() instanceof AbstractGunItem) {
             Animator animator = event.getAnimator();
 
-            if (animator instanceof DiveAnimationHostAnimator
-                    || animator instanceof DiveIntoWaterAnimator
-//                    || animator instanceof FastSwimAnimator
-                    || animator instanceof DodgeAnimator
+            if (animator instanceof DodgeAnimator
                     || animator instanceof RollAnimator
+//                    || animator instanceof DiveAnimationHostAnimator
+//                    || animator instanceof DiveIntoWaterAnimator
+//                    || animator instanceof FastSwimAnimator
 //                    || animator instanceof KongVaultAnimator
 //                    || animator instanceof SpeedVaultAnimator
 //                    || animator instanceof ChargeJumpAnimator
@@ -41,22 +43,29 @@ public class EventHandlerForTaCZ {
                     || animator instanceof BackwardWallJumpAnimator
 //                    || animator instanceof WallJumpAnimator
                     || animator instanceof ClimbUpAnimator
-                    || animator instanceof FlippingAnimator
+//                    || animator instanceof FlippingAnimator
 //                    || animator instanceof HangAnimator
 //                    || animator instanceof JumpFromBarAnimator
 //                    || animator instanceof VerticalWallRunAnimator
-                    || animator instanceof WallSlideAnimator
+//                    || animator instanceof WallSlideAnimator
 //                    || animator instanceof TapAnimator
             ) {
                 return;
             }
 
+            if (animator instanceof DiveAnimationHostAnimator
+                    || animator instanceof DiveIntoWaterAnimator
+                    || animator instanceof WallSlideAnimator
+                    || animator instanceof FlippingAnimator
+                    || animator instanceof ClingToCliffAnimator
+                    || animator instanceof TapAnimator
+            ) {
+//                setAim(event.getPlayer(), false);
+                return;
+            }
+
             if (animator instanceof FastRunningAnimator) {
-                AbstractClientPlayer player = event.getPlayer();
-                if (player instanceof IClientPlayerGunOperator operator && IClientPlayerGunOperator.fromLocalPlayer((LocalPlayer) player).isAim()) {
-                    event.getOption().cancelAnimation();
-                    return;
-                }
+//                setAim(event.getPlayer(), false);
 
                 event.getOption().cancel(AnimationPart.LEFT_LEG);
                 event.getOption().cancel(AnimationPart.RIGHT_LEG);
@@ -65,26 +74,35 @@ public class EventHandlerForTaCZ {
                 return;
             }
 
-            if (animator instanceof KongVaultAnimator
+/*            if (animator instanceof HangAnimator
+                    || animator instanceof RideZiplineAnimator
+            ) {
+                setAim(event.getPlayer(), false);
+
+                event.getOption().cancel(AnimationPart.RIGHT_ARM);
+                return;
+            }*/
+
+            if (animator instanceof HangAnimator
+                    || animator instanceof RideZiplineAnimator
+                    || animator instanceof KongVaultAnimator
                     || animator instanceof SpeedVaultAnimator
-                    || animator instanceof ChargeJumpAnimator
                     || animator instanceof CatLeapAnimator
-                    || animator instanceof HangAnimator
+                    || animator instanceof ChargeJumpAnimator
 //                    || animator instanceof ClingToCliffAnimator
                     || animator instanceof WallJumpAnimator
                     || animator instanceof JumpFromBarAnimator
-                    || animator instanceof RideZiplineAnimator
             ) {
                 event.getOption().cancel(AnimationPart.RIGHT_ARM);
                 return;
             }
 
-            if (animator instanceof ClingToCliffAnimator) {
-                /*if (isLeftHandClinging(event.getPlayer())) {
+            /*if (animator instanceof ClingToCliffAnimator) {
+                if (isLeftHandClinging(event.getPlayer())) {
                     event.getOption().cancel(AnimationPart.RIGHT_ARM);
-                }*/
+                }
                 return;
-            }
+            }*/
 
             if (animator instanceof CrawlAnimator) {
                 event.getOption().cancelAnimation();
@@ -92,6 +110,25 @@ public class EventHandlerForTaCZ {
             }
             event.getOption().cancel(AnimationPart.LEFT_ARM);
             event.getOption().cancel(AnimationPart.RIGHT_ARM);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onActionStarted(ParCoolActionEvent.StartEvent event) {
+        Action action = event.getAction();
+
+        if (action instanceof Dive
+                || action instanceof SkyDive
+                || action instanceof WallSlide
+                || action instanceof Tap
+                || action instanceof Flipping
+                || action instanceof FastSwim
+                || action instanceof FastRun
+                || action instanceof ClingToCliff) {
+            if (event.getPlayer() instanceof LocalPlayer) {
+                setAim((LocalPlayer) event.getPlayer(), false);
+            }
         }
     }
 
@@ -149,7 +186,7 @@ public class EventHandlerForTaCZ {
                 float weight = (float) cache.getCache("weight_modifier");
                 IStamina stamina = IStamina.get(player);
                 if(weight <= 6.4F && stamina != null && !stamina.isExhausted()) {
-                    stamina.consume((int) (2 * weight));
+                    stamina.consume((int) weight);
                     return;
                 }
             }
@@ -187,4 +224,11 @@ public class EventHandlerForTaCZ {
 
         return false;
     }*/
+
+    @SuppressWarnings("SameParameterValue")
+    private static void setAim(LocalPlayer player, boolean aim) {
+        if (player instanceof IClientPlayerGunOperator && IClientPlayerGunOperator.fromLocalPlayer(player).isAim()) {
+            IClientPlayerGunOperator.fromLocalPlayer(player).aim(aim);
+        }
+    }
 }
