@@ -29,7 +29,7 @@ ordering = "BEFORE"
 side = "BOTH"
 [[dependencies.parcool_compat_addon]]
 modId = "tacz"
-mandatory = false
+mandatory = true
 versionRange = "[1.1.4,)"
 ordering = "BEFORE"
 side = "BOTH"
