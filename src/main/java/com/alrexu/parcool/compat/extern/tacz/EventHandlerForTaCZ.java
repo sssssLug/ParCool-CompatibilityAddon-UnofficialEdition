@@ -144,9 +144,9 @@ public class EventHandlerForTaCZ {
     public static void onGunToShoot(GunShootEvent event) {
         LivingEntity shooter = event.getShooter();
         //Maybe we can stop clientside only?
-        /*if (!event.getLogicalSide().isClient()) {
+        if (!event.getLogicalSide().isClient()) {
             return;
-        }*/
+        }
 
         if (!(shooter instanceof Player player)) {
             return;
@@ -166,7 +166,6 @@ public class EventHandlerForTaCZ {
 
         if(instance.isDoingAny(
                 Crawl.class,
-                CatLeap.class,
                 BreakfallReady.class,
                 Tap.class,
                 //barely
@@ -194,8 +193,7 @@ public class EventHandlerForTaCZ {
             return;
         }
 
-        if(instance.isDoingAny(
-                FastRun.class) || !instance.isDoingNothing()) {
+        if(instance.get(FastRun.class).isDoing() || !instance.isDoingNothing()) {
             event.setCanceled(true);
         }
     }

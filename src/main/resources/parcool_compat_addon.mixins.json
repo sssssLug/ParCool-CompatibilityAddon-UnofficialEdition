@@ -12,6 +12,6 @@
     "tacz.client.TaCZLocalPlayerAimMixin"
   ],
   "mixins": [
-    "parcool.common.EntityMixin"
+    "tacz.common.EntityMixin"
   ]
 }
